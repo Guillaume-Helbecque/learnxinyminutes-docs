@@ -9,155 +9,153 @@ translator:
 lang: fr-fr
 ---
 
-You can read all about Chapel at [Cray's official Chapel website](https://chapel-lang.org).
-In short, Chapel is an open-source, high-productivity, parallel-programming
-language in development at Cray Inc., and is designed to run on multi-core PCs
-as well as multi-kilocore supercomputers.
+Pour tout savoir sur Chapel, consultez le [site officiel de Chapel par Cray](https://chapel-lang.org).
+En bref, Chapel est un language de programmation parallèle open-source et hautement productif en cours de développement par Cray Inc., et conçu pour s'éxécuter sur des PCs multi-coeur ainsi que des superordinateurs multi-kilocoeur.
 
-More information and support can be found at the bottom of this document.
+De plus amples informations et accompagnements sont disponibles au bas de ce document.
 
 ```chapel
-// Comments are C-family style
+// Les commentaires sont de type C
 
-// one line comment
+// commentaire d'une ligne
 /*
- multi-line comment
+ commentaire sur plusieurs lignes
 */
 
-// Basic printing
+// Affichages basiques
 
 write("Hello, ");
 writeln("World!");
 
-// write and writeln can take a list of things to print.
-// Each thing is printed right next to the others, so include your spacing!
-writeln("There are ", 3, " commas (\",\") in this line of code");
+// write et writeln peuvent prendre une liste de choses à afficher.
+// Chaque chose est affichée juste à côté des autres, donc ajouter vos espaces!
+writeln("Il y a ", 3, " virgules (\",\") dans cette ligne de code");
 
-// Different output channels:
-stdout.writeln("This goes to standard output, just like plain writeln() does");
-stderr.writeln("This goes to standard error");
+// Différents canaux de sortie:
+stdout.writeln("Cela va dans la sortie standard, tout comme le fait writeln() par défaut");
+stderr.writeln("Cela va dans la sortie d'erreur standard");
 
 
-// Variables don't have to be explicitly typed as long as
-// the compiler can figure out the type that it will hold.
-// 10 is an int, so myVar is implicitly an int
+// Les variables n'ont pas besoin d'être explicitement typées tant que
+// le compilateur puisse déterminer le type qu'elle contiendront.
+// 10 est un int, donc myVar est implicitement un int
 var myVar = 10;
 myVar = -10;
 var mySecondVar = myVar;
-// var anError; would be a compile-time error.
+// var anError; provoquerait une erreur de compilation.
 
-// We can (and should) explicitly type things.
+// Nous pouvons (et devrions) explicitement typer les choses.
 var myThirdVar: real;
 var myFourthVar: real = -1.234;
 myThirdVar = myFourthVar;
 
 // Types
 
-// There are a number of basic types.
-var myInt: int = -1000; // Signed ints
-var myUint: uint = 1234; // Unsigned ints
-var myReal: real = 9.876; // Floating point numbers
-var myImag: imag = 5.0i; // Imaginary numbers
-var myCplx: complex = 10 + 9i; // Complex numbers
-myCplx = myInt + myImag; // Another way to form complex numbers
-var myBool: bool = false; // Booleans
-var myStr: string = "Some string..."; // Strings
-var singleQuoteStr = 'Another string...'; // String literal with single quotes
+// Il existe un certain nombre de types de base.
+var myInt: int = -1000; // Entiers signés
+var myUint: uint = 1234; // Entiers non signés
+var myReal: real = 9.876; // Nombres à virgule flottante
+var myImag: imag = 5.0i; // Nombres imaginaires
+var myCplx: complex = 10 + 9i; // Nombres complexes
+myCplx = myInt + myImag; // Autre façon de former des nombres complexes
+var myBool: bool = false; // Booléens
+var myStr: string = "Some string..."; // Chaînes de caractères
+var singleQuoteStr = 'Another string...'; // Chaîne de caractères avec des guillemets simples
 
-// Some types can have sizes.
-var my8Int: int(8) = 10; // 8 bit (one byte) sized int;
-var my64Real: real(64) = 1.516; // 64 bit (8 bytes) sized real
+// Certains types peuvent avoir des tailles.
+var my8Int: int(8) = 10; // entier de taille 8 bits (un octet)
+var my64Real: real(64) = 1.516; // réel de taille 64 bits (8 octets)
 
-// Typecasting.
+// Conversion de type.
 var intFromReal = myReal : int;
 var intFromReal2: int = myReal : int;
 
-// Type aliasing.
-type chroma = int;        // Type of a single hue
-type RGBColor = 3*chroma; // Type representing a full color
+// Alias de type.
+type chroma = int;        // Type d'une seule teinte
+type RGBColor = 3*chroma; // Type représentant une couleur entière
 var black: RGBColor = (0,0,0);
 var white: RGBColor = (255, 255, 255);
 
-// Constants and Parameters
+// Constantes and Paramètres
 
-// A const is a constant, and cannot be changed after set in runtime.
+// Un const est une constante, et ne peut pas être modifiée après avoir été définies à l'éxécution.
 const almostPi: real = 22.0/7.0;
 
-// A param is a constant whose value must be known statically at
-// compile-time.
+// Un param est une constante dont la valeur doit être connue statiquement à la compilation.
 param compileTimeConst: int = 16;
 
-// The config modifier allows values to be set at the command line.
-// Set with --varCmdLineArg=Value or --varCmdLineArg Value at runtime.
+// Le modificateur de const permet de définir les valeurs depuis la ligne de commande.
+// Définit avec --varCmdLineArg=Value ou --varCmdLineArg Value lors de l'éxécution.
 config var varCmdLineArg: int = -123;
 config const constCmdLineArg: int = 777;
 
-// config param can be set at compile-time.
-// Set with --set paramCmdLineArg=value at compile-time.
+// config param peuvent être définis à la compilation.
+// Défini avec --set paramCmdLineArg=value à la compilation.
 config param paramCmdLineArg: bool = false;
 writeln(varCmdLineArg, ", ", constCmdLineArg, ", ", paramCmdLineArg);
 
-// References
+// Références
 
-// ref operates much like a reference in C++. In Chapel, a ref cannot
-// be made to alias a variable other than the variable it is initialized with.
-// Here, refToActual refers to actual.
+// ref fonctionne de manière similaire à une référence en C++. En Chapel, un
+// ref ne peut pas être créé pour être un alias d'une variable autre que
+// celle avec laquelle il est initialisé.
+// Ici, refToActual fait référence à actual.
 var actual = 10;
 ref refToActual = actual;
-writeln(actual, " == ", refToActual); // prints the same value
-actual = -123; // modify actual (which refToActual refers to)
-writeln(actual, " == ", refToActual); // prints the same value
-refToActual = 99999999; // modify what refToActual refers to (which is actual)
-writeln(actual, " == ", refToActual); // prints the same value
+writeln(actual, " == ", refToActual); // affiche la même valeur
+actual = -123; // modifie actual (auquel refToActual fait référence)
+writeln(actual, " == ", refToActual); // affiche la même valeur
+refToActual = 99999999; // modifie ce à quoi refToActual fait référence (qui est actual)
+writeln(actual, " == ", refToActual); // affiche la même valeur
 
-// Operators
+// Opérateurs
 
-// Math operators:
+// Opérateurs mathématiques:
 var a: int, thisInt = 1234, thatInt = 5678;
 a = thisInt + thatInt;  // Addition
 a = thisInt * thatInt;  // Multiplication
-a = thisInt - thatInt;  // Subtraction
+a = thisInt - thatInt;  // Soustraction
 a = thisInt / thatInt;  // Division
 a = thisInt ** thatInt; // Exponentiation
-a = thisInt % thatInt;  // Remainder (modulo)
+a = thisInt % thatInt;  // Reste (modulo)
 
-// Logical operators:
+// Opérateurs logiques:
 var b: bool, thisBool = false, thatBool = true;
-b = thisBool && thatBool; // Logical and
-b = thisBool || thatBool; // Logical or
-b = !thisBool;            // Logical negation
+b = thisBool && thatBool; // Et logical
+b = thisBool || thatBool; // Ou logique
+b = !thisBool;            // Négation logique
 
-// Relational operators:
-b = thisInt > thatInt;           // Greater-than
-b = thisInt >= thatInt;          // Greater-than-or-equal-to
-b = thisInt < a && a <= thatInt; // Less-than, and, less-than-or-equal-to
-b = thisInt != thatInt;          // Not-equal-to
-b = thisInt == thatInt;          // Equal-to
+// Opérateurs relationnels:
+b = thisInt > thatInt;           // Supérieur à
+b = thisInt >= thatInt;          // Supérieur ou égal à
+b = thisInt < a && a <= thatInt; // Inférieur à, et, inférieur ou égal à
+b = thisInt != thatInt;          // Différent de
+b = thisInt == thatInt;          // Egal à
 
-// Bitwise operators:
-a = thisInt << 10;     // Left-bit-shift by 10 bits;
-a = thatInt >> 5;      // Right-bit-shift by 5 bits;
-a = ~thisInt;          // Bitwise-negation
-a = thisInt ^ thatInt; // Bitwise exclusive-or
+// Opérateurs bit à bit:
+a = thisInt << 10;     // Décalage de 10 bits vers la gauche
+a = thatInt >> 5;      // Décalage de 5 bits vers la droite
+a = ~thisInt;          // Négation bit à bit
+a = thisInt ^ thatInt; // Ou exclusif bit à bit
 
-// Compound assignment operators:
-a += thisInt;          // Addition-equals (a = a + thisInt;)
-a *= thatInt;          // Times-equals (a = a * thatInt;)
-b &&= thatBool;        // Logical-and-equals (b = b && thatBool;)
-a <<= 3;               // Left-bit-shift-equals (a = a << 10;)
+// Opérateurs d'affectation combinés:
+a += thisInt;          // Plus égal (a = a + thisInt;)
+a *= thatInt;          // Fois égal (a = a * thatInt;)
+b &&= thatBool;        // Et logique égal (b = b && thatBool;)
+a <<= 3;               // Décalage de bit vers la gauche égal (a = a << 10;)
 
-// Unlike other C family languages, there are no
-// pre/post-increment/decrement operators, such as:
+// Contrairement à d'autres languages de la famille C, il n'y a pas
+// d'opérateurs de pre/post-incrémentation/décrémentation, tels que:
 //
 // ++j, --j, j++, j--
 
-// Swap operator:
+// Opérateur de permutation:
 var old_this = thisInt;
 var old_that = thatInt;
-thisInt <=> thatInt; // Swap the values of thisInt and thatInt
+thisInt <=> thatInt; // Permute les valeurs de thisInt et thatInt
 writeln((old_this == thatInt) && (old_that == thisInt));
 
-// Operator overloads can also be defined, as we'll see with procedures.
+// Des surcharges d'opérateurs peuvent également être définies, comme nous le verrons avec les procédures.
 
 // Tuples
 
